@@ -1,0 +1,206 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<title>Sorteador</title>
+<style>
+    .cardWrap {
+        margin: 1em auto;
+        color: #fff;
+        font-family: sans-serif;
+    }
+
+    .card {
+        background: linear-gradient(to bottom, #e84c3d 0%, #e84c3d 26%, #ecedef 26%, #ecedef 100%);
+        height: 13em;
+        float: left;
+        position: relative;
+        padding: 1em;
+        margin-top: 30px;
+    }
+
+    .cardLeft {
+        border-top-left-radius: 8px;
+        border-bottom-left-radius: 8px;
+        width: 18em;
+    }
+
+    .cardRight {
+        width: 180px;
+        border-left: 0.18em dashed #fff;
+        border-top-right-radius: 8px;
+        border-bottom-right-radius: 8px;
+    }
+
+    h1 {
+        font-size: 1.1em;
+        margin-top: 0;
+    }
+
+    h1 span {
+        font-weight: normal;
+    }
+
+    .title,
+    .name,
+    .seat,
+    .time {
+        text-transform: uppercase;
+        font-weight: normal;
+    }
+
+    .title h2,
+    .name h2,
+    .seat h2,
+    .time h2 {
+        font-size: 0.9em;
+        color: #525252;
+        margin: 0;
+    }
+
+    .title span,
+    .name span,
+    .seat span,
+    .time span {
+        font-size: 0.7em;
+        color: #a2aeae;
+    }
+
+    .title {
+        margin: 2em 0 0 0;
+    }
+
+    .name,
+    .seat {
+        margin: 0.7em 0 0 0;
+    }
+
+    .time {
+        margin: 0.7em 0 0 1em;
+    }
+
+    .seat,
+    .time {
+        float: left;
+    }
+
+    .eye {
+        position: relative;
+        width: 2em;
+        height: 1.5em;
+        background: #fff;
+        margin: 0 auto;
+        border-radius: 1em/0.6em;
+        z-index: 1;
+    }
+
+    .eye:before,
+    .eye:after {
+        content: "";
+        display: block;
+        position: absolute;
+        border-radius: 50%;
+    }
+
+    .eye:before {
+        width: 1em;
+        height: 1em;
+        background: #e84c3d;
+        z-index: 2;
+        left: 8px;
+        top: 4px;
+    }
+
+    .eye:after {
+        width: 0.5em;
+        height: 0.5em;
+        background: #fff;
+        z-index: 3;
+        left: 12px;
+        top: 3px;
+    }
+
+    .number {
+        text-align: center;
+        text-transform: uppercase;
+    }
+
+    .number h3 {
+        color: #e84c3d;
+        margin: 0.9em 0 0 0;
+        font-size: 2.5em;
+    }
+
+    .number span {
+        display: block;
+        color: #a2aeae;
+    }
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="inline-block" style="margin-left: auto; margin-right: auto;width: 600px;">
+    <div class="d-flex flex-column align-items-center">
+        <h2 class="m-3">Inicie o sorteio!</h2>
+        <form novalidate action="{% url 'home' %}" method="POST">{% csrf_token %}
+            <input name="sorteio" value="True" type="hidden">
+            <button type="submit" class="btn btn-primary btn-lg">Sortear</button>
+        </form>
+    </div>
+
+    {% if choise %}
+    <div class="d-flex flex-column align-items-center">
+        <div class="cardWrap">
+            <div class="card cardLeft">
+                <h1>Card <span>Sorteado</span></h1>
+                <div class="title">
+                    <h2>{{ choise.nome }}</h2>
+                    <span>Nome</span>
+                </div>
+                <div class="name">
+                    <h2>{{ choise.disciplina }}</h2>
+                    <span>Materia</span>
+                </div>
+
+            </div>
+            <div class="card cardRight">
+                <div class="eye"></div>
+                <div class="number">
+                    <h3>{{ choise.quantidade }}</h3>
+                    <span>Quantidade</span>
+                </div>
+                <a href="{{ choise.link }}" target="_blank"
+                    style="margin-top:5px; margin-left: auto; margin-right: auto">
+                    <i class="fa-solid fa-link fa-2xl" style="color:'black';"></i>
+                    Link
+                </a>
+
+            </div>
+
+
+        </div>
+
+        <form class="row g-1 m-1" style="display:block" novalidate action="{% url 'home' %}" method="POST">{% csrf_token %}
+            <div class="d-flex align-self-start">
+                <input name="id" value="{{ choise.id }}" type="hidden">
+                <label style="margin-right:20px" for="customRange2" class="form-label">Modificar Quantidade: </label>
+                <input style="margin-right:20px; width: 250px;" type="range" value="-1" min="{{ negative }}"
+                    max="100" oninput="this.nextElementSibling.value = this.value" name="qtd">
+                <output>-1</output>
+            </div>
+
+            <div class="col-12">
+                <button class="btn btn-primary" type="submit">Mudar</button>
+            </div>
+        </form>
+    </div>
+    {% endif %}
+
+
+
+</div>
+
+
+{% endblock %}
